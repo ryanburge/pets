@@ -18,11 +18,13 @@ regg <- gss %>%
   mutate(age2 = age/89) %>% 
   mutate(att2 = attend/8) %>% 
   mutate(literal = car::recode(bible, "1=1; else =0")) %>% 
-  mutate(reltrad2 = as.factor(reltrad))
+  mutate(reltrad2 = as.factor(reltrad)) %>% 
+  mutate(white = car::recode(race, "1=1; else=0"))
 
-reg1 <- glm.nb(numpets ~ att2 + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + factor(reltrad), data = regg)
+reg1 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + factor(reltrad), data = regg)
 
-coef_names <- c("Church Attendance" = "att2", 
+coef_names <- c("Church Attendance" = "att2",
+                "White" = "white",
                 "Education" = "educ2", 
                 "Number of Kids" = "childs2", 
                 "Male" = "male1", 
@@ -39,7 +41,7 @@ coef_names <- c("Church Attendance" = "att2",
                 "No Religion" = "factor(reltrad)7",
                 "Constant" = "(Intercept)")
 
-coef_names <- coef_names[1:15]
+coef_names <- coef_names[1:16]
 
 plot <- plot_summs(reg1, coefs = coef_names, point.shape = FALSE) 
 
@@ -48,7 +50,7 @@ plot +
   theme_gg("Montserrat") +
   ggsave("D://pets/images/fig1.png", width = 10, height = 6, type = "cairo-png")
 
-
+library(stargazer)
 stargazer(reg1, type = "text", title = "Figure 1 Regression Model", dep.var.labels = c("Predicting Number of Pets"),
-          covariate.labels = c("Church Attendance", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Mainline", "Black Prot.", "Catholic", "Jewish", "Other Faith", "No Religion"),
+          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Mainline", "Black Prot.", "Catholic", "Jewish", "Other Faith", "No Religion"),
           star.cutoffs = c(0.05), out = "D://pets/images/fig1.htm")
