@@ -7,6 +7,7 @@ gss <- gss %>%
   mutate(mamm2 = car::recode(smammal, "1=1; 0=0; else = NA"))
 
 
+
 regg <- gss %>% 
   mutate(male = car::recode(sex, "1=1; else =0")) %>% 
   mutate(male = as.factor(male)) %>% 

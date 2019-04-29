@@ -21,3 +21,6 @@ gg2 +
 stargazer(reg1, type = "text", title = "Figure 4 Regression Model", dep.var.labels = c("Predicting Number of Pets"),
           covariate.labels = c("Church Attendance", "Mainline", "Catholic", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Attend*Mainline", "Attend*Catholic"),
           star.cutoffs = c(0.05), out = "D://pets/images/fig4.htm")
+
+
+gss <- gss %>% 

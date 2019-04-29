@@ -25,7 +25,6 @@ cfun <- function(df, var, var2) {
   var <- enquo(var)
   
   df %>% 
-    group_by(reltrad) %>% 
     mean_ci(!! var) %>% 
     mutate(animal = var2)
   
