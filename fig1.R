@@ -18,10 +18,11 @@ regg <- gss %>%
   mutate(age2 = age/89) %>% 
   mutate(att2 = attend/8) %>% 
   mutate(literal = car::recode(bible, "1=1; else =0")) %>% 
+  mutate(humans = car::recode(bible, "3=1; else =0")) %>% 
   mutate(reltrad2 = as.factor(reltrad)) %>% 
   mutate(white = car::recode(race, "1=1; else=0"))
 
-reg1 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + factor(reltrad), data = regg)
+reg1 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + humans + factor(reltrad), data = regg)
 
 coef_names <- c("Church Attendance" = "att2",
                 "White" = "white",
@@ -33,6 +34,7 @@ coef_names <- c("Church Attendance" = "att2",
                 "Urban" = "urban1", 
                 "Income" =  "income2", 
                 "Literalism" = "literal", 
+                "Written by People" = "humans", 
                 "Mainline" = "factor(reltrad)2", 
                 "Black Prot." = "factor(reltrad)3",
                 "Catholic" = "factor(reltrad)4",
@@ -41,7 +43,7 @@ coef_names <- c("Church Attendance" = "att2",
                 "No Religion" = "factor(reltrad)7",
                 "Constant" = "(Intercept)")
 
-coef_names <- coef_names[1:16]
+coef_names <- coef_names[1:17]
 
 plot <- plot_summs(reg1, coefs = coef_names, point.shape = FALSE) 
 
@@ -52,5 +54,5 @@ plot +
 
 library(stargazer)
 stargazer(reg1, type = "text", title = "Figure 1 Regression Model", dep.var.labels = c("Predicting Number of Pets"),
-          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Mainline", "Black Prot.", "Catholic", "Jewish", "Other Faith", "No Religion"),
+          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Written by Humans", "Mainline", "Black Prot.", "Catholic", "Jewish", "Other Faith", "No Religion"),
           star.cutoffs = c(0.05), out = "D://pets/images/fig1.htm")

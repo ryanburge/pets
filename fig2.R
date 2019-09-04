@@ -12,10 +12,11 @@ gss <- gss %>%
   mutate(age2 = age/89) %>% 
   mutate(att2 = attend/8) %>% 
   mutate(literal = car::recode(bible, "1=1; else =0")) %>% 
+  mutate(humans = car::recode(bible, "3=1; else =0")) %>% 
   mutate(white = car::recode(race, "1=1; else=0")) %>% 
   mutate(reltrad2 = as.factor(reltrad)) 
 
-reg1 <- glm.nb(numpets ~ attend + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + reltrad2 , data = gss)
+reg1 <- glm.nb(numpets ~ attend + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + humans + reltrad2 , data = gss)
 
 gg2 <- effect_plot(reg1, pred= attend, int.width = .76, interval = TRUE, data = gss) 
 
@@ -27,7 +28,7 @@ gg2 +
 
 library(stargazer)
 stargazer(reg1, type = "text", title = "Figure 2 Regression Model", dep.var.labels = c("Predicting Number of Pets"),
-          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Mainline", "Black Prot.", "Catholic", "Jewish", "Other Faith", "No Religion"), column.labels = c(""),
+          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Written by Humans", "Mainline", "Black Prot.", "Catholic", "Jewish", "Other Faith", "No Religion"), column.labels = c(""),
           star.cutoffs = c(0.05), out = "D://pets/images/fig2_new.htm")
 
 

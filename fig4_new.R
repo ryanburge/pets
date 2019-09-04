@@ -2,10 +2,7 @@
 gss <- gss %>% 
   mutate(cat2 = car::recode(cat, "1=1; 0=0; else = NA")) %>% 
   mutate(dog2 = car::recode(dog, "1=1; 0=0; else = NA")) %>% 
-  mutate(fish2 = car::recode(fish, "1=1; 0=0; else = NA")) %>% 
-  mutate(bird2 = car::recode(bird, "1=1; 0=0; else = NA")) %>% 
-  mutate(mamm2 = car::recode(smammal, "1=1; 0=0; else = NA"))
-
+ 
 
 
 regg <- gss %>% 
@@ -21,15 +18,13 @@ regg <- gss %>%
   mutate(age2 = age/89) %>% 
   mutate(att2 = attend/8) %>% 
   mutate(literal = car::recode(bible, "1=1; else =0")) %>% 
+  mutate(humans = car::recode(bible, "3=1; else =0")) %>% 
   mutate(reltrad2 = as.factor(reltrad)) %>% 
   mutate(white = car::recode(race, "1=1; else =0"))
 
   
-reg1 <- glm(cat2 ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + factor(reltrad), family = "binomial", data = regg)
-reg2 <- glm(dog2 ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + factor(reltrad), family = "binomial", data = regg)
-reg3 <- glm(fish2 ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + factor(reltrad), family = "binomial", data = regg)
-reg4 <- glm(bird2 ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + factor(reltrad), family = "binomial", data = regg)
-reg5 <- glm(mamm2 ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + factor(reltrad), family = "binomial", data = regg)
+reg1 <- glm(cat2 ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + humans + factor(reltrad), family = "binomial", data = regg)
+reg2 <- glm(dog2 ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + humans + factor(reltrad), family = "binomial", data = regg)
 
 
 coef_names <- c("Church Attendance" = "att2", 
@@ -42,6 +37,7 @@ coef_names <- c("Church Attendance" = "att2",
                 "Urban" = "urban1", 
                 "Income" =  "income2", 
                 "Literalism" = "literal", 
+                "Written by Humans" = "humans",
                 "Mainline" = "factor(reltrad)2", 
                 "Black Prot." = "factor(reltrad)3",
                 "Catholic" = "factor(reltrad)4",
@@ -50,9 +46,9 @@ coef_names <- c("Church Attendance" = "att2",
                 "No Religion" = "factor(reltrad)7",
                 "Constant" = "(Intercept)")
 
-coef_names <- coef_names[1:16]
+coef_names <- coef_names[1:17]
 
-plot <- plot_summs(reg1, reg2, reg3, reg4, reg5, coefs = coef_names, point.shape = FALSE, model.names = c("Cat", "Dog", "Fish", "Bird", "Small Mammal"), color.class = "Qual2") 
+plot <- plot_summs(reg1, reg2, coefs = coef_names, point.shape = FALSE, model.names = c("Cat", "Dog"), color.class = "Qual2") 
 
 plot +
   labs(x ="Coefficient Estimate", y = "", subtitle = "", title = "Predicting Having Each Pet", caption = "Data: GSS 2018") +
@@ -63,6 +59,6 @@ plot +
 
 
 
-stargazer(reg1, reg2, reg3, reg4, reg5, type = "text", title = "Figure 3 Regression Model", dep.var.labels = c("Cat", "Dog", "Fish", "Bird", "Small Mammal"),
-          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Mainline", "Black Prot.", "Catholic", "Jewish", "Other Faith", "No Religion"), 
+stargazer(reg1, reg2, type = "text", title = "Figure 4 Regression Model", dep.var.labels = c("Cat", "Dog"),
+          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Written by Humans", "Mainline", "Black Prot.", "Catholic", "Jewish", "Other Faith", "No Religion"), 
           star.cutoffs = c(0.05), out = "D://pets/images/fig4_new.htm")

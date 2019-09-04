@@ -10,13 +10,23 @@ ml <- gss %>%
 cath <- gss %>% 
   filter(catholic ==1)
 
-reg1 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal, data = evan)
-reg2 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal, data = ml)
-reg3 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal, data = cath)
+reg1 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + humans, data = evan)
+reg2 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + humans, data = ml)
+reg3 <- glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + humans, data = cath)
 
-coef_names <- c("Church Attendance" = "att2", "White" = "white", "Education" = "educ2", "Number of Kids" = "childs2", "Male" = "male1", "Republican ID" = "pid72", "Age" = "age2", "Urban" = "urban1", "Income" =  "income2", "Literalism" = "literal", "Constant" = "(Intercept)")
+coef_names <- c("Church Attendance" = "att2", 
+                "White" = "white", 
+                "Education" = "educ2", 
+                "Number of Kids" = "childs2", 
+                "Male" = "male1", 
+                "Republican ID" = "pid72", 
+                "Age" = "age2", "Urban" = "urban1", 
+                "Income" =  "income2", 
+                "Literalism" = "literal", 
+                "Written by Humans" = "humans",
+                "Constant" = "(Intercept)")
 
-coef_names <- coef_names[1:10]
+coef_names <- coef_names[1:11]
 
 plot <- plot_summs(reg1, reg2, reg3, coefs = coef_names, point.shape = FALSE, model.names = c("Evangelical", "Mainline", "Catholic"), color.class = "Qual2") 
 
@@ -30,9 +40,9 @@ plot +
 reg <- gss %>% 
   filter(reltrad == 1 | reltrad == 2 | reltrad == 4) %>% 
   split(.$reltrad) %>% 
-  purrr::map(~ glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal, data = .x)) 
+  purrr::map(~ glm.nb(numpets ~ att2 + white + male + income2 + pid72 + childs2 + age2 + educ2 + urban + literal + humans, data = .x)) 
 
 
 stargazer(reg1, reg2, reg3, type = "text", title = "Figure 2 Regression Model", dep.var.labels = c("Predicting Number of Pets"),
-          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism"), column.labels = c("Evangelical", "Mainline", "Catholic"),
+          covariate.labels = c("Church Attendance", "White", "Male", "Income", "Republican ID", "Number of Kids", "Age", "Education", "Urban", "Literalism", "Written by Humans"), column.labels = c("Evangelical", "Mainline", "Catholic"),
           star.cutoffs = c(0.05), out = "D://pets/images/fig3_new.htm")
